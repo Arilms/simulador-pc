@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista Orçamentária do Comparador PC</title>
+  <!-- Sem esta linha o navegador usa o favicon.ico da raiz do dominio,
+       que no seu servidor e o "W" do WordPress. -->
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="shortcut icon" type="image/svg+xml" href="logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estilo.css?v=18">
+  <style>
+    body { padding: 0; }
+    .folha { max-width: 900px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    .orc-topo {
+      display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+      gap: 1rem; border-bottom: 3px solid var(--tinta); padding-bottom: 1rem; margin-bottom: 1.5rem;
+    }
+    .orc-topo__titulo { font-family: var(--fonte-titulo); font-size: 1.9rem; line-height: 1.1; }
+    .orc-topo__marca { font-family: var(--fonte-mono); font-size: .78rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .14em; }
+    .orc-meta { font-family: var(--fonte-mono); font-size: .82rem; color: var(--texto-suave); text-align: right; }
+    .orc-meta strong { color: var(--texto); }
+
+    .orc-acoes { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.8rem; }
+    .orc-botao {
+      font-family: var(--fonte-titulo); font-weight: 600; font-size: .92rem;
+      border: 1px solid var(--borda-forte); background: var(--fundo-card); color: var(--texto);
+      padding: .6rem 1rem; border-radius: var(--raio-p); cursor: pointer; transition: all .12s;
+    }
+    .orc-botao:hover { transform: translateY(-1px); box-shadow: var(--sombra); }
+    .orc-botao--pdf { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+    .orc-botao--copiar { background: var(--atual); color: #fff; border-color: var(--atual); }
+    .orc-botao--voltar { margin-left: auto; }
+    .orc-botao--link { background: var(--xeon); color: #fff; border-color: var(--xeon); }
+
+    table.orc-tabela { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .orc-tabela th {
+      text-align: left; font-family: var(--fonte-mono); font-size: .72rem; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--texto-suave); padding: .6rem .5rem; border-bottom: 2px solid var(--borda-forte);
+    }
+    .orc-tabela td { padding: .7rem .5rem; border-bottom: 1px solid var(--borda); vertical-align: top; }
+    .orc-th-incluir { width: 4.5rem; text-align: center; }
+    .orc-incluir { text-align: center; vertical-align: middle; }
+    .orc-dica {
+      margin: 0 0 .8rem; padding: .6rem .8rem;
+      background: var(--fundo); border: 1px solid var(--borda); border-radius: var(--raio-p);
+      font-size: .82rem; line-height: 1.5; color: var(--texto-suave);
+    }
+    .orc-dica strong { color: var(--texto); }
+    .orc-tabela .num { text-align: right; font-family: var(--fonte-mono); white-space: nowrap; }
+
+    /* No celular a tabela de 6 colunas nao cabe: em tela estreita ela seria
+       comprimida (ou o navegador diminuiria a pagina toda, deixando o texto
+       minusculo). Entao cada linha vira um blocao empilhado, com o nome do
+       campo a esquerda e o valor a direita. Na impressao volta a ser tabela. */
+    @media screen and (max-width: 640px) {
+      .orc-tabela thead { display: none; }
+      .orc-tabela, .orc-tabela tbody, .orc-tabela tr, .orc-tabela td { display: block; width: 100%; }
+      .orc-tabela tr {
+        border: 1px solid var(--borda); border-radius: var(--raio-p);
+        padding: .35rem .2rem; margin-bottom: .9rem; background: var(--fundo-card);
+      }
+      .orc-tabela td { border-bottom: 1px dashed var(--borda); padding: .55rem .7rem; }
+      .orc-tabela tr td:first-child { border-bottom: 1px solid var(--borda); }
+      .orc-tabela tr td:last-child { border-bottom: none; }
+      /* celulas com rotulo ficam em duas colunas: nome do campo | valor */
+      .orc-tabela td[data-rotulo] {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+      }
+      /* A chave de incluir/tirar vira a primeira linha do bloco, bem visível */
+      .orc-tabela td.orc-incluir {
+        align-items: center; background: var(--fundo);
+        border-radius: var(--raio-p); margin: .1rem 0 .3rem;
+      }
+      .orc-tabela td[data-rotulo]::before {
+        content: attr(data-rotulo);
+        font-family: var(--fonte-mono); font-size: .72rem; text-transform: uppercase;
+        letter-spacing: .05em; color: var(--texto-suave); flex: 0 0 auto;
+      }
+      .orc-tabela td.num { text-align: right; }
+      .orc-tabela td[data-rotulo="Total"] { background: var(--fundo); font-size: 1.02rem; }
+      /* area de toque dos botoes */
+      .orc-botao { padding: .7rem 1rem; }
+    }
+    .orc-cat { font-family: var(--fonte-mono); font-size: .72rem; color: var(--texto-suave); }
+    .orc-nome { font-weight: 600; font-family: var(--fonte-titulo); }
+    .orc-tag { font-family: var(--fonte-mono); font-size: .68rem; padding: .1rem .45rem; border-radius: 999px; }
+    .orc-tag--china { background: var(--xeon-claro); color: var(--xeon); }
+    .orc-tag--brasil { background: var(--atual-claro); color: var(--atual); }
+    .orc-link { color: var(--tinta); font-size: .82rem; font-weight: 600; }
+    .orc-aviso { color: #b45309; font-size: .74rem; margin-top: .2rem; }
+
+    .orc-totais { margin-top: 1.6rem; margin-left: auto; max-width: 340px; }
+    .orc-totais__linha { display: flex; justify-content: space-between; padding: .4rem 0; color: var(--texto-suave); }
+    .orc-totais__linha .mono { color: var(--texto); font-weight: 700; }
+    .orc-totais__linha--final {
+      font-family: var(--fonte-titulo); font-size: 1.2rem; color: var(--texto);
+      border-top: 2px solid var(--tinta); margin-top: .3rem; padding-top: .6rem;
+    }
+    .orc-totais__linha--final .mono { color: var(--tinta); font-size: 1.35rem; }
+
+    .orc-rodape { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--borda); font-size: .78rem; color: var(--texto-suave); }
+    .orc-credito {
+      margin-top: .9rem; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .9rem;
+      font-size: .82rem; color: var(--texto);
+    }
+    .orc-credito code { font-family: var(--fonte-mono); font-size: .72rem; background: var(--fundo); padding: .15rem .45rem; border-radius: 6px; word-break: break-all; }
+    .orc-credito__pix { display: inline-flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    .orc-credito__btn {
+      font-family: var(--fonte-titulo); font-weight: 700; font-size: .72rem; color: var(--tinta);
+      background: var(--dica); border: none; cursor: pointer; padding: .25rem .65rem; border-radius: 999px; white-space: nowrap;
+    }
+    .orc-credito__btn:hover:not(:disabled) { filter: brightness(1.06); }
+    .orc-credito__btn:disabled { opacity: .7; cursor: default; }
+
+    .orc-vazio { text-align: center; padding: 4rem 1rem; color: var(--texto-suave); }
+    .orc-vazio a { color: var(--tinta); font-weight: 600; }
+
+    @media print {
+      .orc-acoes, .orc-credito__btn { display: none; }
+      body { background: #fff; }
+      .orc-link { color: #000; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: .7rem; color: #555; word-break: break-all; }
+    }
+  </style>
+</head>
+<body>
+  <div class="folha" id="folha">
+    <div class="orc-vazio" id="vazio">
+      <p>Nenhuma simulação encontrada.</p>
+      <p><a href="index.html">Voltar ao simulador</a> e montar sua lista primeiro.</p>
+    </div>
+  </div>
+
+  <!-- Bibliotecas para gerar PDF (opcionais; se nao carregarem, usamos a impressao do navegador) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    const reais = n => "R$ " + Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    const dados = (() => {
+      try { return JSON.parse(sessionStorage.getItem("orcamentoPC")); } catch { return null; }
+    })();
+
+    function dataLegivel(iso) {
+      const d = iso ? new Date(iso) : new Date();
+      return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function num(v, alternativa) {
+      const n = Number(v);
+      return isFinite(n) ? n : (Number(alternativa) || 0);
+    }
+
+    /* Conta de um item, ja considerando as chaves de frete e imposto.
+       Os campos "frete" e "imposto" que vem do simulador sao os valores
+       CHEIOS; "impostoSemFrete" e quanto o imposto passa a ser quando o frete
+       sai da conta (nao da para so subtrair: o imposto de importacao incide
+       sobre produto + frete). Com esses tres numeros esta pagina liga e desliga
+       sozinha, sem repetir a regra tributaria aqui dentro.
+
+       Listas geradas em versoes antigas nao tem esses campos; nesse caso o
+       codigo cai no que existe e nada aparece errado. */
+    function calcItem(it) {
+      const freteCheio   = num(it.frete, 0);
+      const produtoCheio = num(it.produtoCheio, num(it.produto, num(it.base) - freteCheio));
+      const impostoCheio = num(it.imposto, it.impostos);
+      const impostoSemF  = num(it.impostoSemFrete, impostoCheio);
+
+      const semFrete   = !!it.semFrete;
+      const semImposto = !!it.semImposto;
+      const semItem    = !!it.semItem;
+
+      /* Item desligado zera tudo, mas os valores "cheios" continuam por perto
+         para a tela mostrar riscado quanto ele custava. */
+      const produto = semItem ? 0 : produtoCheio;
+      const frete   = (semItem || semFrete) ? 0 : freteCheio;
+      const imposto = semItem ? 0 : (semImposto ? 0 : (semFrete ? impostoSemF : impostoCheio));
+
+      return {
+        produto, produtoCheio, freteCheio, frete, impostoCheio, imposto,
+        semFrete, semImposto, semItem,
+        totalCheio: produtoCheio + freteCheio + impostoCheio,
+        total: produto + frete + imposto
+      };
+    }
+
+    /* Compatibilidade com o resto do arquivo */
+    function valorFrete(it) { return calcItem(it).frete; }
+    function valorProduto(it) { return calcItem(it).produto; }
+
+    /* Chave liga/desliga dentro de uma celula da tabela. */
+    function chaveCelula(i, campo, desligado, rotulo) {
+      return `<button class="alternar${desligado ? " alternar--off" : ""}"
+                data-alternar="${campo}" data-indice="${i}"
+                role="switch" aria-checked="${!desligado}"
+                title="${desligado ? `Voltar a somar ${rotulo}` : `Ver quanto fica sem ${rotulo}`}">
+                <span class="alternar__bola"></span>
+              </button>`;
+    }
+
+    /* Valor da celula: riscado quando a parcela esta desligada. */
+    function valorCelula(cheio, desligado) {
+      if (cheio <= 0) return "--";
+      return desligado
+        ? `<s class="valor-desligado">${reais(cheio)}</s> ${reais(0)}`
+        : reais(cheio);
+    }
+
+    function algumAjusteLigado() {
+      return dados.itens.some(it => it.semFrete || it.semImposto || it.semItem);
+    }
+
+    /* Clique nas chaves: muda o item e redesenha a lista. */
+    document.addEventListener("click", (e) => {
+      const chave = e.target.closest(".alternar");
+      if (chave) {
+        const it = dados.itens[Number(chave.dataset.indice)];
+        if (it) { it[chave.dataset.alternar] = !it[chave.dataset.alternar]; render(); }
+        return;
+      }
+      if (e.target.closest("#restaurarAjustes")) {
+        dados.itens.forEach(it => { it.semFrete = false; it.semImposto = false; it.semItem = false; });
+        render();
+      }
+    });
+
+    function render() {
+      if (!dados || !dados.itens || dados.itens.length === 0) return; // mantem tela vazia
+      // render() agora roda de novo a cada clique nas chaves de frete/imposto,
+      // entao o aviso de "lista vazia" pode ja ter sido removido antes.
+      const vazio = document.getElementById("vazio");
+      if (vazio) vazio.remove();
+
+      const linhas = dados.itens.map((it, i) => {
+        const c = calcItem(it);
+        const tagClasse = it.origem === "china" ? "orc-tag--china" : "orc-tag--brasil";
+        const tagTexto = it.origem === "china" ? "Vem da China" : "Já no Brasil";
+        const link = it.link_compra
+          ? `<a class="orc-link" href="${it.link_compra}" target="_blank" rel="noopener">Comprar &rarr;</a>` : "--";
+        const aviso = it.foraRemessa
+          ? `<div class="orc-aviso">Acima de US$ 3.000: importação formal (tributos variam)</div>` : "";
+        return `
+          <tr>
+            <td class="orc-incluir" data-rotulo="Incluir no total">
+              ${chaveCelula(i, "semItem", c.semItem, "esta peça")}
+            </td>
+            <td class="${c.semItem ? "orc-nome--off" : ""}">
+              <div class="orc-cat">${it.categoria || ""}</div>
+              <div class="orc-nome">
+                <span class="orc-nome__titulo">${it.nome}</span>
+              </div>
+              <span class="orc-tag ${tagClasse}">${tagTexto}</span>
+              ${aviso}
+            </td>
+            <td data-rotulo="Loja">${it.loja || "--"}</td>
+            <td data-rotulo="Link">${link}</td>
+            <td class="num${c.semItem ? " num--off" : ""}" data-rotulo="Peça">
+              ${c.semItem ? `<s class="valor-desligado">${reais(c.produtoCheio)}</s> ${reais(0)}` : reais(c.produto)}
+            </td>
+            <td class="num${c.semFrete ? " num--off" : ""}" data-rotulo="Frete">
+              ${valorCelula(c.freteCheio, c.semFrete || c.semItem)}
+              ${(c.freteCheio > 0 && !c.semItem) ? chaveCelula(i, "semFrete", c.semFrete, "frete") : ""}
+            </td>
+            <td class="num${c.semImposto ? " num--off" : ""}" data-rotulo="Imposto">
+              ${valorCelula(c.impostoCheio, c.semImposto || c.semItem)}
+              ${(c.impostoCheio > 0 && !c.semItem) ? chaveCelula(i, "semImposto", c.semImposto, "imposto") : ""}
+            </td>
+            <td class="num${c.semItem ? " num--off" : ""}" data-rotulo="Total">
+              ${c.semItem
+                ? `<s class="valor-desligado">${reais(c.totalCheio)}</s> <strong>${reais(0)}</strong>`
+                : `<strong>${reais(c.total)}</strong>`}
+            </td>
+          </tr>`;
+      }).join("");
+
+      const contas       = dados.itens.map(calcItem);
+      const somaFrete    = contas.reduce((s, c) => s + c.frete, 0);
+      const somaProdutos = contas.reduce((s, c) => s + c.produto, 0);
+      const somaImposto  = contas.reduce((s, c) => s + c.imposto, 0);
+      const somaTotal    = contas.reduce((s, c) => s + c.total, 0);
+
+      const avisoAjuste = algumAjusteLigado()
+        ? `<div class="aviso-simulacao">
+             <strong>Simulação:</strong> você desligou algum item, frete ou imposto.
+             Serve para enxergar o peso de cada parcela.
+             <strong>Não é o valor que será cobrado</strong>.
+             <button class="alternar-restaurar" id="restaurarAjustes">Voltar tudo</button>
+           </div>`
+        : "";
+
+      const html = `
+        <header class="orc-topo">
+          <div>
+            <div class="orc-topo__marca">Comparador PC Chinês x PC Nacional</div>
+            ${dados.tipo === "recomendacoes" ? `<div class="orc-topo__selo">Lista pronta do autor</div>` : ""}
+            <h1 class="orc-topo__titulo">${dados.tituloLista || "Lista Orçamentária"}</h1>
+            ${(dados.faltando && dados.faltando.length) ? `
+              <div class="orc-falta">
+                <strong>Atenção:</strong> ${dados.faltando.length}
+                ${dados.faltando.length === 1 ? "peça desta lista está indisponível" : "peças desta lista estão indisponíveis"}
+                no momento e ${dados.faltando.length === 1 ? "não entrou" : "não entraram"} na conta:
+                ${dados.faltando.join(", ")}.
+              </div>` : ""}
+          </div>
+          <div class="orc-meta">
+            Gerado em <strong>${dataLegivel(dados.geradoEm)}</strong><br>
+            Dólar usado: <strong>${reais(dados.cotacaoDolar)}</strong> &middot; ${dados.itens.length} peça(s)
+          </div>
+        </header>
+
+        <div class="orc-acoes">
+          ${dados.link ? `<button class="orc-botao orc-botao--link" onclick="copiarLink(this)">Copiar link</button>` : ""}
+          ${(dados.link && "share" in navigator) ? `<button class="orc-botao orc-botao--link" onclick="compartilharLink(this)">Compartilhar link</button>` : ""}
+          <button class="orc-botao orc-botao--copiar" onclick="copiarLista(this)">Copiar lista</button>
+          ${('share' in navigator) ? `<button class="orc-botao orc-botao--pdf" onclick="compartilharLista(this)">Compartilhar lista</button>` : ``}
+          <button class="orc-botao" onclick="baixarPDF()">Baixar PDF</button>
+          <button class="orc-botao" onclick="baixarCSV()">Baixar CSV (Excel)</button>
+          <button class="orc-botao" onclick="baixarTXT()">Baixar TXT</button>
+          <button class="orc-botao" onclick="window.print()">Imprimir</button>
+          <a class="orc-botao orc-botao--voltar" href="index.html">Voltar ao simulador</a>
+        </div>
+
+        <p class="orc-dica">
+          Use as chavinhas para simular: a da coluna <strong>Incluir</strong> tira a peça
+          inteira da conta, e as de <strong>Frete</strong> e <strong>Imposto</strong> tiram
+          só aquela parcela. Nada é apagado da lista, e o total é refeito na hora.
+        </p>
+        <table class="orc-tabela">
+          <thead>
+            <tr>
+              <th class="orc-th-incluir">Incluir</th>
+              <th>Peça</th><th>Loja</th><th>Link</th>
+              <th class="num">Peça</th><th class="num">Frete</th><th class="num">Imposto</th><th class="num">Total</th>
+            </tr>
+          </thead>
+          <tbody>${linhas}</tbody>
+        </table>
+
+        <div class="orc-totais">
+          <div class="orc-totais__linha"><span>Subtotal das peças</span><span class="mono">${reais(somaProdutos)}</span></div>
+          <div class="orc-totais__linha"><span>Total de frete</span><span class="mono">${reais(somaFrete)}</span></div>
+          <div class="orc-totais__linha"><span>Total de impostos</span><span class="mono">${reais(somaImposto)}</span></div>
+          <div class="orc-totais__linha orc-totais__linha--final"><span>Valor final</span><span class="mono">${reais(somaTotal)}</span></div>
+          ${avisoAjuste}
+        </div>
+
+        <div class="orc-rodape">
+          Lista gerada pelo simulador para fins de comparação. Preços e impostos são estimativas e as
+          alíquotas de importação podem mudar. Confira os valores atuais antes de comprar.
+          <div class="orc-credito">
+            <span>Feito por <strong>José Arilmar Saldanha Fontenele Neto</strong></span>
+            <span class="orc-credito__pix">
+              Pix: <code>66d54436-3ad8-4db0-afbd-2bed7214d16b</code>
+              <button class="orc-credito__btn" onclick="copiarPix(this)">Copiar Pix</button>
+            </span>
+          </div>
+        </div>`;
+
+      document.getElementById("folha").innerHTML = html;
+    }
+
+    /* -------- PDF (jsPDF). Se a biblioteca nao carregar, usa a impressao. -------- */
+    function baixarPDF() {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert("Não foi possível carregar o gerador de PDF. Vou abrir a impressão do navegador (escolha 'Salvar como PDF').");
+        window.print();
+        return;
+      }
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const margem = 14;
+
+      doc.setFont("helvetica", "bold"); doc.setFontSize(16);
+      doc.text("Lista Orçamentária", margem, 18);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(110);
+      doc.text(`Comparador PC Chinês x PC Nacional  |  Gerado em ${dataLegivel(dados.geradoEm)}`, margem, 24);
+      doc.text(`Dólar usado: ${reais(dados.cotacaoDolar)}  |  ${dados.itens.length} peça(s)`, margem, 29);
+
+      doc.autoTable({
+        startY: 34,
+        head: [["Categoria", "Peça", "Loja", "Peça (R$)", "Frete (R$)", "Imposto (R$)", "Total (R$)"]],
+        body: dados.itens.map(it => {
+          const c = calcItem(it);
+          return [
+            it.categoria || "", it.nome, it.loja || "",
+            reais(c.produto).replace("R$ ", ""),
+            c.frete > 0 ? reais(c.frete).replace("R$ ", "") : "-",
+            c.imposto > 0 ? reais(c.imposto).replace("R$ ", "") : "-",
+            reais(c.total).replace("R$ ", "")
+          ];
+        }),
+        styles: { font: "helvetica", fontSize: 8, cellPadding: 2 },
+        headStyles: { fillColor: [31, 42, 68] },
+        columnStyles: { 3: { halign: "right" }, 4: { halign: "right" }, 5: { halign: "right" }, 6: { halign: "right" } }
+      });
+
+      let y = doc.lastAutoTable.finalY + 8;
+      doc.setFontSize(9); doc.setTextColor(60);
+      doc.text(`Subtotal das peças: ${reais(dados.subtotal)}`, margem, y);
+      doc.text(`Total de impostos: ${reais(dados.impostos)}`, margem, y + 5);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(31, 42, 68);
+      doc.text(`Valor final: ${reais(dados.itens.map(calcItem).reduce((s, c) => s + c.total, 0))}`, margem, y + 12);
+      if (algumAjusteLigado()) {
+        doc.setFontSize(8); doc.setTextColor(150, 90, 20);
+        doc.text("Simulacao: frete ou imposto desligado em algum item. Nao e o valor a ser cobrado.", margem, y + 19);
+      }
+
+      // Links de compra clicaveis
+      y += 22;
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(40);
+      doc.text("Links de compra", margem, y);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(30, 60, 130);
+      dados.itens.forEach(it => {
+        if (!it.link_compra) return;
+        y += 6;
+        if (y > 285) { doc.addPage(); y = 20; }
+        const rotulo = (it.nome.length > 45 ? it.nome.slice(0, 45) + "..." : it.nome);
+        doc.textWithLink(rotulo + "  ->  " + it.loja, margem, y, { url: it.link_compra });
+      });
+
+      // Rodape com credito do autor
+      y += 12;
+      if (y > 288) { doc.addPage(); y = 20; }
+      doc.setDrawColor(210); doc.line(margem, y - 4, 196, y - 4);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(120);
+      doc.text("Feito por José Arilmar Saldanha Fontenele Neto  |  Pix: 66d54436-3ad8-4db0-afbd-2bed7214d16b", margem, y);
+
+      doc.save("orcamento-pc.pdf");
+    }
+
+    /* -------- Copiar a chave Pix do autor -------- */
+    const CHAVE_PIX = "66d54436-3ad8-4db0-afbd-2bed7214d16b";
+    async function copiarPix(botao) {
+      try {
+        await navigator.clipboard.writeText(CHAVE_PIX);
+        feedbackBotao(botao, "Copiado!");
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = CHAVE_PIX; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        try { document.execCommand("copy"); feedbackBotao(botao, "Copiado!"); }
+        catch { alert("Chave Pix: " + CHAVE_PIX); }
+        document.body.removeChild(ta);
+      }
+    }
+
+    /* -------- CSV (abre no Excel / Google Sheets) -------- */
+    function baixarCSV() {
+      const sep = ";";
+      const cab = ["Categoria", "Peça", "Origem", "Loja", "Link de compra", "Peça (R$)", "Frete (R$)", "Imposto (R$)", "Total (R$)"];
+      const linhas = dados.itens.map(it => {
+        const c = calcItem(it);
+        return [
+          it.categoria || "", it.nome, it.origem === "china" ? "Vem da China" : "Já no Brasil", it.loja || "",
+          it.link_compra || "",
+          c.produto.toFixed(2).replace(".", ","),
+          c.frete.toFixed(2).replace(".", ","),
+          c.imposto.toFixed(2).replace(".", ","),
+          c.total.toFixed(2).replace(".", ",")
+        ];
+      });
+      linhas.push([]);
+      const cs = dados.itens.map(calcItem);
+      const soma = f => cs.reduce((s, c) => s + c[f], 0).toFixed(2).replace(".", ",");
+      linhas.push(["", "", "", "", "Subtotal das peças", "", "", "", soma("produto")]);
+      linhas.push(["", "", "", "", "Total de frete", "", "", "", soma("frete")]);
+      linhas.push(["", "", "", "", "Total de impostos", "", "", "", soma("imposto")]);
+      linhas.push(["", "", "", "", "Valor final", "", "", "", soma("total")]);
+      if (algumAjusteLigado()) {
+        linhas.push([]);
+        linhas.push(["ATENÇÃO: simulação com frete ou imposto desligado em algum item; não é o valor a ser cobrado."]);
+      }
+
+      const esc = v => `"${String(v).replace(/"/g, '""')}"`;
+      const conteudo = [cab, ...linhas].map(l => l.map(esc).join(sep)).join("\r\n");
+      baixarArquivo("\uFEFF" + conteudo, "orcamento-pc.csv", "text/csv;charset=utf-8");
+    }
+
+    /* -------- Texto da lista (usado no TXT, copiar e compartilhar) -------- */
+    function montarTextoLista() {
+      let t = (dados.tituloLista
+        ? dados.tituloLista.toUpperCase()
+        : "LISTA ORÇAMENTÁRIA") + " - Comparador PC Chinês x PC Nacional\n";
+      t += `Gerado em ${dataLegivel(dados.geradoEm)} | Dólar: ${reais(dados.cotacaoDolar)}\n`;
+      t += "".padEnd(50, "=") + "\n\n";
+      dados.itens.forEach(it => {
+        t += `[${it.categoria || "-"}] ${it.nome}\n`;
+        t += `  Loja: ${it.loja || "-"} (${it.origem === "china" ? "Vem da China" : "Já no Brasil"})\n`;
+        if (it.link_compra) t += `  Link: ${it.link_compra}\n`;
+        const c = calcItem(it);
+        t += `  Frete: ${reais(c.frete)}${c.semFrete ? " (desligado na simulação)" : ""}\n`;
+        if (c.impostoCheio > 0) t += `  Imposto: ${reais(c.imposto)}${c.semImposto ? " (desligado na simulação)" : ""}\n`;
+        t += `  Valor final: ${reais(c.total)}${c.semItem ? ` (desligado, custaria ${reais(c.totalCheio)})` : ""}\n\n`;
+      });
+      t += "".padEnd(50, "-") + "\n";
+      const cs = dados.itens.map(calcItem);
+      const soma = f => cs.reduce((s, c) => s + c[f], 0);
+      t += `Subtotal das peças: ${reais(soma("produto"))}\n`;
+      t += `Total de frete:     ${reais(soma("frete"))}\n`;
+      t += `Total de impostos:  ${reais(soma("imposto"))}\n`;
+      t += `VALOR FINAL:        ${reais(soma("total"))}\n`;
+      // O link vai junto no texto: quem recebe a lista colada consegue abrir
+      // a versao interativa, com os precos atualizados.
+      if (dados.link) t += `\nAbrir esta lista no site:\n${dados.link}\n`;
+      if (algumAjusteLigado()) {
+        t += "\n(!) Simulação: frete ou imposto desligado em algum item.\n";
+        t += "    Não é o valor que será cobrado.\n";
+      }
+      return t;
+    }
+
+    /* -------- TXT (bom para WhatsApp) -------- */
+    function baixarTXT() {
+      baixarArquivo(montarTextoLista(), "orcamento-pc.txt", "text/plain;charset=utf-8");
+    }
+
+    /* -------- Feedback rapido no botao -------- */
+    function feedbackBotao(botao, texto) {
+      if (!botao) return;
+      const original = botao.textContent;
+      botao.textContent = texto;
+      botao.disabled = true;
+      setTimeout(() => { botao.textContent = original; botao.disabled = false; }, 1600);
+    }
+
+    /* -------- Copiar a lista para a area de transferencia -------- */
+    /* Copia so o endereco da lista (o "Copiar lista" copia o texto inteiro).
+       Serve para mandar no WhatsApp. */
+    async function copiarLink(botao) {
+      const texto = dados.link;
+      if (!texto) return;
+      const original = botao.textContent;
+      try {
+        await navigator.clipboard.writeText(texto);
+        botao.textContent = "Link copiado ✓";
+        setTimeout(() => { botao.textContent = original; }, 1800);
+      } catch (e) {
+        // Sem permissao de area de transferencia (ou sem https): mostra para copiar na mao.
+        window.prompt("Copie o link desta lista:", texto);
+      }
+    }
+
+    async function copiarLista(botao) {
+      const texto = montarTextoLista();
+      try {
+        await navigator.clipboard.writeText(texto);
+        feedbackBotao(botao, "Copiado!");
+      } catch {
+        // Plano B para navegadores antigos ou sem HTTPS
+        const ta = document.createElement("textarea");
+        ta.value = texto; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        try { document.execCommand("copy"); feedbackBotao(botao, "Copiado!"); }
+        catch { alert("Não foi possível copiar automaticamente. Selecione o texto manualmente."); }
+        document.body.removeChild(ta);
+      }
+    }
+
+    /* -------- Compartilhar (abre a tela nativa do celular) -------- */
+    /* Manda so o endereco da lista pela tela de compartilhar do aparelho
+       (WhatsApp, Telegram, Notas...). E o caminho mais curto para mandar
+       a lista para alguem: chega um link, nao um textao. */
+    async function compartilharLink(botao) {
+      if (!dados.link) return;
+      const titulo = dados.tituloLista || "Lista Orçamentária - PC";
+      try {
+        await navigator.share({ title: titulo, text: titulo, url: dados.link });
+      } catch (e) {
+        // Cancelou, ou o aparelho recusou: cai no copiar, que sempre funciona.
+        if (e && e.name === "AbortError") return;
+        copiarLink(botao);
+      }
+    }
+
+    async function compartilharLista(botao) {
+      const texto = montarTextoLista();
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "Lista Orçamentária - PC", text: texto });
+        } catch (e) {
+          // usuario cancelou o compartilhamento: nao faz nada
+        }
+      } else {
+        copiarLista(botao); // sem compartilhamento nativo: copia como alternativa
+      }
+    }
+
+    function baixarArquivo(conteudo, nome, tipo) {
+      const blob = new Blob([conteudo], { type: tipo });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = nome;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    render();
+  </script>
+</body>
+</html>

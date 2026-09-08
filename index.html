@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Chinês x PC Nacional: minhas recomendações de montagem</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <meta name="description"
+    content="Guia simples de quais peças comprar para montar um PC Chinês (importado) ou um PC Nacional (comprado no Brasil), com simulador de compras e cálculo de impostos.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- O "?v=9" e o numero da versao dos arquivos. Sempre que voce subir um
+       estilo.css ou app.js novo, aumente esse numero nas duas linhas (v=4, v=5...).
+       Isso obriga o navegador de todo mundo a baixar a versao nova em vez de usar
+       a copia velha que ele guardou. Sem isso, a atualizacao pode demorar dias
+       para aparecer para quem ja visitou o site. -->
+  <link rel="stylesheet" href="estilo.css?v=18">
+</head>
+
+<body>
+
+  <!-- =========================================================
+       SPRITE DE ICONES (SVG). Cada <symbol> e um icone.
+       Nao aparece na tela; e so a "biblioteca" de desenhos.
+       Para usar em qualquer lugar do site:
+         <svg class="icone"><use href="#ico-processador"></use></svg>
+       O traco usa currentColor, entao o icone toma a cor do texto.
+       ========================================================= -->
+  <svg class="sprite-icones" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <g id="base-icone" fill="none" stroke="currentColor" stroke-width="1.6"
+         stroke-linecap="round" stroke-linejoin="round"></g>
+    </defs>
+
+    <symbol id="ico-processador" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="6" width="12" height="12" rx="2" />
+      <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+      <path d="M9 3v3M12 3v3M15 3v3M9 18v3M12 18v3M15 18v3" />
+      <path d="M3 9h3M3 12h3M3 15h3M18 9h3M18 12h3M18 15h3" />
+    </symbol>
+
+    <symbol id="ico-placa-mae" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <rect x="6" y="6" width="6" height="6" rx="1" />
+      <path d="M15 5.5v7M18 5.5v7" />
+      <path d="M6 15.5h12M6 18.5h8" />
+    </symbol>
+
+    <symbol id="ico-placa-video" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="7" width="19" height="10" rx="2" />
+      <circle cx="9" cy="12" r="3" />
+      <path d="M15 10.2h4M15 13.8h4" />
+      <path d="M6 17v3M12 17v3" />
+    </symbol>
+
+    <symbol id="ico-memoria" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="6" width="20" height="9" rx="1.5" />
+      <rect x="5" y="9" width="3.5" height="3" rx=".4" />
+      <rect x="10.25" y="9" width="3.5" height="3" rx=".4" />
+      <rect x="15.5" y="9" width="3.5" height="3" rx=".4" />
+      <path d="M5 15v2.5M9 15v2.5M13 15v2.5M17 15v2.5M20 15v2.5" />
+    </symbol>
+
+    <symbol id="ico-ssd" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="8" width="17" height="8" rx="1.5" />
+      <path d="M4 10.6H1.6M4 13.4H1.6" />
+      <rect x="7.5" y="10.5" width="4.5" height="3" rx=".4" />
+      <path d="M15 11h3.5M15 13.5h3.5" />
+    </symbol>
+
+    <symbol id="ico-fonte" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="6.5" width="19" height="11" rx="2" />
+      <path d="M13.4 8.6 9.6 13h2.3l-.9 2.6 3.9-4.4h-2.3l.8-2.6Z" />
+      <rect x="16.8" y="10.7" width="3.3" height="2.6" rx=".5" />
+    </symbol>
+
+    <symbol id="ico-cooler" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3.5" y="4" width="9" height="16" rx="1.5" />
+      <path d="M3.5 7.5h9M3.5 11h9M3.5 14.5h9M3.5 18h9" />
+      <circle cx="17.5" cy="12" r="3" />
+      <circle cx="17.5" cy="12" r=".9" />
+    </symbol>
+
+    <symbol id="ico-gabinete" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5.5" y="2.5" width="13" height="19" rx="2" />
+      <circle cx="15.6" cy="5.6" r=".9" />
+      <path d="M8.6 5.6h3.4M8.6 9.2h6.8M8.6 12.4h6.8M8.6 15.6h6.8M8.6 18.8h4" />
+    </symbol>
+
+    <symbol id="ico-fan" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <circle cx="12" cy="12" r="1.8" />
+      <path d="M12 10.2c1.2-2.2 3-3 5.2-2.3" />
+      <path d="M13.8 12c2.2 1.2 3 3 2.3 5.2" />
+      <path d="M12 13.8c-1.2 2.2-3 3-5.2 2.3" />
+      <path d="M10.2 12c-2.2-1.2-3-3-2.3-5.2" />
+    </symbol>
+
+    <symbol id="ico-generico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 8.4 12 3.4l9 5v7.2l-9 5-9-5V8.4Z" />
+      <path d="M3 8.4 12 13.4l9-5M12 13.4v7.2" />
+    </symbol>
+
+    <symbol id="ico-tpm" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3.5" y="7.5" width="17" height="9.5" rx="1.5" />
+      <path d="M6.5 17v2.5M10 17v2.5M14 17v2.5M17.5 17v2.5" />
+      <path d="M10.2 12.2v-1.1a1.8 1.8 0 0 1 3.6 0v1.1" />
+      <rect x="9.4" y="12.2" width="5.2" height="3.4" rx=".8" />
+    </symbol>
+
+    <symbol id="ico-ampliar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="M15.5 15.5 21 21" />
+      <path d="M10.5 7.5v6M7.5 10.5h6" />
+    </symbol>
+
+    <symbol id="ico-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 6l12 12M18 6 6 18" />
+    </symbol>
+
+    <symbol id="ico-link-externo" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 4h6v6" />
+      <path d="M20 4l-8.5 8.5" />
+      <path d="M18 14.5V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.5" />
+    </symbol>
+  </svg>
+
+
+  <!-- ============ CREDITO / PIX (topo) ============ -->
+  <div class="credito credito--topo">
+    <span class="credito__texto">Feito por <strong>José Arilmar Saldanha Fontenele Neto</strong></span>
+    <span class="credito__pix">
+      <span class="credito__label">Pix:</span>
+      <code class="credito__chave">66d54436-3ad8-4db0-afbd-2bed7214d16b</code>
+      <button class="btn-pix" onclick="copiarPix(this)">Copiar Pix</button>
+    </span>
+  </div>
+
+  <!-- ============ CABECALHO / NAVEGACAO ============ -->
+  <header class="cabecalho">
+    <div class="cabecalho__interno">
+      <a href="#" class="marca" data-aba="inicio">
+        <svg class="marca__icone" width="28" height="28" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display: flex;">
+          <!-- Metade Xeon (Laranja) -->
+          <path d="M3 5C3 3.895 3.895 3 5 3H12V21H5C3.895 21 3 20.105 3 19V5Z" fill="#ef6c2b" fill-opacity="0.15"
+            stroke="#ef6c2b" stroke-width="2" />
+          <path d="M7 8H9" stroke="#ef6c2b" stroke-width="2" stroke-linecap="round" />
+          <path d="M7 12H9" stroke="#ef6c2b" stroke-width="2" stroke-linecap="round" />
+          <path d="M7 16H9" stroke="#ef6c2b" stroke-width="2" stroke-linecap="round" />
+          <!-- Metade Atual (Verde) -->
+          <path d="M12 3H19C20.105 3 21 3.895 21 5V19C21 20.105 20.105 21 19 21H12V3Z" fill="#159e63"
+            fill-opacity="0.15" stroke="#159e63" stroke-width="2" />
+          <path d="M15 8H17" stroke="#159e63" stroke-width="2" stroke-linecap="round" />
+          <path d="M15 12H17" stroke="#159e63" stroke-width="2" stroke-linecap="round" />
+          <path d="M15 16H17" stroke="#159e63" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span class="marca__texto">Chinês<span class="marca__vs"> x </span>Nacional</span>
+      </a>
+
+      <nav class="navegacao" id="navegacao" aria-label="Navegação principal">
+        <button class="navegacao__botao ativo" data-aba="inicio">Página Inicial</button>
+        <button class="navegacao__botao" data-aba="xeon">Montar PC Chinês</button>
+        <button class="navegacao__botao" data-aba="atual">Montar PC Nacional</button>
+      </nav>
+
+      <button class="botao-carrinho" id="abrirCarrinho" aria-label="Abrir simulador de compras">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="botao-carrinho__texto">Simulador</span>
+        <span class="botao-carrinho__contador" id="contadorCarrinho">0</span>
+      </button>
+
+      <button class="menu-hamburguer" id="menuHamburguer" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+
+    <!-- ============ ABA: PAGINA INICIAL ============ -->
+    <section class="aba" id="aba-inicio" data-conteudo="inicio">
+
+      <div class="heroi">
+        <p class="heroi__sobretitulo">Guia de montagem de PC</p>
+        <h1 class="heroi__titulo">
+          Minhas recomendações<br>para montar um <em>PC Nacional</em> e <em>Chinês</em>
+        </h1>
+        <p class="heroi__descricao">
+          Aqui embaixo eu explico <strong>quais peças comprar em cada montagem e por quê</strong>.
+        </p>
+        <div class="heroi__acoes">
+          <button class="botao botao--xeon" data-aba="xeon">Ver peças do PC Chinês</button>
+          <button class="botao botao--atual" data-aba="atual">Ver peças do PC Nacional</button>
+        </div>
+      </div>
+
+      <!-- ============ TUTORIAL: QUE PEÇAS COMPRAR ============ -->
+      <div class="secao">
+        <h2 class="secao__titulo">Que peças comprar em cada montagem (e por quê)</h2>
+        <p class="secao__apoio">
+          Siga a ordem abaixo. A regra mais importante: <strong>no PC Chinês, nem tudo vale a pena
+            importar</strong>.
+        </p>
+
+        <div class="tutorial">
+
+          <!-- ---------- PC CHINES ---------- -->
+          <article class="guia guia--xeon">
+            <header class="guia__cabeca">
+              <h3>Montagem PC Chinês</h3>
+              <p>O que importar do AliExpress e o que comprar aqui</p>
+            </header>
+
+            <ol class="passos">
+              <li class="passo">
+                <span class="passo__num">1</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">Processador <span class="etiqueta etiqueta--importar">Importar da China</span></h4>
+                  <p class="passo__peca">Xeon E5 v3 ou v4 (soquete LGA2011-3)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> Os processadores Xeon, por terem
+                    <strong>mais núcleos</strong> que um processador normal,
+                    aguentam um <strong>trabalho pesado enorme</strong> e têm
+                    um ótimo desempenho. Eles não eram utilizados por consumidores
+                    comuns porque foram feitos para servidores de empresas.
+                    Porém, com a alta dos preços no mundo todo, os chineses criaram
+                    <strong>placas-mãe adaptadas</strong> para fazer esses
+                    processadores funcionarem em computadores domésticos comuns.
+                    Minha recomendação de custo-benefício: <strong>E5-2650 v4</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">2</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">Placa-mãe <span class="etiqueta etiqueta--importar">Importar da China</span></h4>
+                  <p class="passo__peca">X99 (HuananZHI, JingSha ou similar), soquete LGA2011-3</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> A placa-mãe é a "fundação" do computador,
+                    onde tudo se conecta. Como o processador Xeon é de servidor, ele
+                    tem um formato gigante e <strong>não encaixa nas placas normais</strong>
+                    vendidas no Brasil. As placas importadas X99 são a "casa feita sob medida"
+                    pelos chineses para receber essa força bruta.
+                    Minha recomendação de custo-benefício: <strong>Machinist V9S</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">3</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">Placa de vídeo <span class="etiqueta etiqueta--brasil">Comprar no
+                      Brasil</span></h4>
+                  <p class="passo__peca">RX 580 8GB ou RX 6600 8GB</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> <strong>Por quê:</strong> A placa de vídeo é o "artista" do computador, responsável por desenhar tudo o que você vê no monitor. Isso é extremamente importante no PC Chinês porque os processadores Xeon <strong>não possuem vídeo integrado</strong>. Ou seja, sem uma placa de vídeo, o PC não dá imagem nenhuma na tela. Antigamente valia muito a pena importar da China, mas hoje, por custarem mais de US$ 50, o imposto dobra o valor delas. A regra de ouro atual é: compre no mercado nacional (com garantia) ou busque marcas chinesas no AliExpress que já tenham envio de galpões dentro do Brasil (livres de taxas surpresas), como alguns modelos da marca SOYO. Minha recomendação de custo-benefício: <strong>RX 580 8GB</strong>.</p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">4</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">Memória RAM <span class="etiqueta etiqueta--importar">Importar da China</span></h4>
+                  <p class="passo__peca">DDR4 ECC REG (registrada), 16GB ou mais</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> A memória RAM é como a "mesa de trabalho" do computador.
+                    A opção mais recomendada costuma ser a memória de servidor (<strong>DDR4 ECC REG</strong>),
+                    pois é muito barata e corrige erros sozinha, evitando que o PC trave.
+                    <strong>Porém, fica a dica:</strong> se você achar memórias comuns de computador
+                    de mesa (DDR4 normal) mais baratas, pode comprar! O único cuidado é não pagar mais
+                    caro por velocidades muito altas (como 3200MHz), pois o processador sempre vai limitar
+                    a velocidade no máximo em 2400MHz. <strong>Atenção:</strong> Escolha um tipo e mantenha
+                    o padrão; nunca misture memória comum com memória de servidor na mesma placa! Minha recomendação de custo-benefício: <strong>DDR4 ECC REG 8GB</strong>
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">5</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    SSD <span class="etiqueta etiqueta--brasil">Comprar no Brasil (ou < US$50)</span>
+                  </h4>
+                  <p class="passo__peca">SSD NV3 NVMe M.2</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> É a peça que faz o PC ligar em
+                    segundos e não travar. Porém, <strong>muita atenção aos
+                      preços na China!</strong> Qualquer SSD importado que custe
+                    mais de US$ 50 (cerca de R$ 275) vai sofrer a taxação pesada.
+                    Um SSD de R$ 350 no AliExpress, com os impostos, vai encostar
+                    nos R$ 670. No dia em que for comprar, verifique o preço na
+                    Amazon e no AliExpress, e escolha o que valer mais a pena.
+                    <strong>Um detalhe importante:</strong> lembre-se de conferir
+                    quantos slots M.2 a placa-mãe escolhida possui, caso planeje
+                    comprar mais de um SSD. É de acordo com o que o seu bolso aguentar, mas minha recomendação de custo-benefício: <strong>SSD DE 512 GB</strong>
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">6</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">Fonte de Alimentação<span class="etiqueta etiqueta--brasil">Comprar no Brasil</span></h4>
+                  <p class="passo__peca">Fonte 600W ou superior (Com selo 80 Plus e PFC Ativo)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> A fonte é o "coração" da máquina. Ela pega a energia da tomada e distribui na medida certa para todas as outras peças. Nunca economize comprando fontes "genéricas" ou baratinhas demais, pois uma fonte ruim pode literalmente queimar o seu computador inteiro em uma queda de luz. Importar fonte da China não vale a pena porque é uma peça muito pesada (o que encarece o frete) e é mais seguro comprar modelos com garantia e certificados para a rede elétrica brasileira. Minha recomendação de custo-benefício: <strong>Fonte 600W</strong></p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">7</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Cooler <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Air Cooler tipo "Torre" (com tubos de calor) ou Water Cooler</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> O cooler é o "ar-condicionado" exclusivo do processador. Como o Xeon tem muitos núcleos e trabalha pesado, ele esquenta bastante. Aquele cooler redondinho e simples de computador de escritório não dá conta dele! Você precisa de um modelo mais robusto (com aqueles canos de cobre aparentes). E não se preocupe com o encaixe: as placas-mãe X99 chinesas já vêm na caixa com um disco adaptador de plástico para você prender qualquer cooler moderno sem dor de cabeça. Compre no Brasil pelo mesmo motivo da fonte: é pesado, barato por aqui e não compensa o risco do frete internacional. Minha recomendação de custo-benefício: <strong>Aircooler Redragon Tyr</strong></p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">8</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">Gabinete <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Gabinete formato Mid-Tower (ATX) com boa ventilação</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> O gabinete é a "carroceria" ou o armário onde tudo vai ser montado. Importar um gabinete da China é inviável, pois é uma caixa enorme e o frete internacional custaria uma fortuna. No Brasil, temos ótimas opções. A dica principal para o kit Xeon é: fuja dos gabinetes que têm a frente totalmente fechada em vidro temperado colado nas ventoinhas, pois eles "sufocam" o PC. Dê preferência para frentes com tela furadinha (chamada de rede "Mesh") ou modelos estilo "Aquário", que são largos e deixam o ar circular bem para resfriar a placa-mãe. Minha recomendação de custo-benefício: <strong>Gabinete Gamer Liketec Pinos (Frontal Madeira)</strong></p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">9</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Fan <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Fans de 120mm para o gabinete</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> Se o cooler é o ar-condicionado do processador, as Fans são os "ventiladores" do gabinete, é sempre bom ter pelo menos 3 fans no seu gabinete para evitar dores de cabeça. Elas trabalham em equipe: umas puxam o ar frio de fora para dentro, e outras jogam o ar quente de dentro para fora. As placas-mãe de servidor esquentam bastante ao redor do processador, então ter um bom fluxo de ar passando por ela é vital para o computador durar anos. É muito mais fácil comprar os kits de ventoinhas no Brasil, muitas vezes já com a "controladora" (uma plaquinha para ligar todas juntas na fonte pelo controle remoto). Minha recomendação de custo-benefício: <strong>Kit 3 Ventoinhas Rise Mode X Led Rainbow (Branco)</strong></p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">10</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Módulo TPM 2.0 <span class="etiqueta etiqueta--importar">Importar da China</span>
+                  </h4>
+                  <p class="passo__peca">Módulo físico de 14 Pinos (MSI ou ASUS)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> O TPM é como se fosse um "cadeado de segurança digital" do seu computador. A Microsoft passou a exigir a presença desse cadeado para deixar você instalar o Windows 11. Os processadores modernos para uso doméstico já têm esse cadeado invisível embutido dentro deles, mas como o Xeon foi criado há alguns anos focado em servidores, ele não possui. Para resolver isso, as placas-mãe chinesas vêm com os pinos exatos para você plugar esse cadeado físico. Se você não comprar, o PC funciona perfeitamente, mas você ficará preso no Windows 10. A dica de ouro é: compre junto com a placa-mãe no AliExpress para aproveitar o frete grátis! <br><br>
+                    ⚠️ <strong>ATENÇÃO COM A COMPATIBILIDADE:</strong> Cada placa-mãe usa um padrão de pinagem diferente. As placas <strong>Qiyida H9S</strong> e a <strong>Machinist MR9A PRO</strong> utilizam o módulo TPM padrão <strong>MSI</strong>. Já a placa <strong>Machinist V9S</strong> exige o padrão <strong>ASUS</strong>. Fique tranquilo, o simulador já disponibiliza somente o modelo correto após você escolher a sua placa mãe, mas sempre verifique isso se for comprar por conta própria!
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <div class="guia__rodape">
+              <p class="guia__rodape-texto">
+                Quer ver tudo isso junto, com os preços de hoje e os links de compra?
+              </p>
+              <button class="botao botao--xeon guia__rodape-botao" data-lista-recomendada="xeon">
+                Lista orçamentária das minhas recomendações
+              </button>
+              <p class="guia__rodape-nota">
+                Abre numa aba nova, já com impostos e frete calculados. Você continua podendo
+                montar a sua própria no simulador.
+              </p>
+            </div>
+          </article>
+
+          <!-- ---------- PC NACIONAL ---------- -->
+          <article class="guia guia--atual">
+            <header class="guia__cabeca">
+              <h3>Montagem PC Nacional</h3>
+              <p>Tudo comprado aqui, com nota fiscal e garantia</p>
+            </header>
+
+            <ol class="passos">
+              <li class="passo">
+                <span class="passo__num">1</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Processador <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Intel Core i5-12400 (Com Vídeo)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> O equilíbrio perfeito entre preço e modernidade. Ele é absurdamente rápido e tem um grande truque: <strong>já vem com vídeo integrado (Intel UHD 730)</strong>. Isso significa que você não precisa gastar com uma placa de vídeo cara agora para ligar o PC, trabalhar ou jogar jogos mais leves. Além disso, <strong>ele já vem com o cooler original na caixa!</strong> Minha recomendação de custo-benefício: <strong>Intel Core i5-12400 (Com Vídeo)</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">2</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Placa-mãe <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Gigabyte B760M H DDR4 (LGA 1700)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> A placa-mãe precisa ter o mesmo <strong>&ldquo;soquete&rdquo;</strong> do processador (LGA 1700). O chipset B760 é o <strong>&ldquo;ponto doce&rdquo;</strong> da Intel: ele tem excelente comunicação com as peças e garante que o computador entregue velocidade total, sem os preços absurdos das placas topo de linha. Minha recomendação de custo-benefício: <strong>Placa Mãe Gigabyte B760M H DDR4</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">3</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Placa de vídeo <span class="etiqueta etiqueta--sem-custo">Não precisa comprar</span>
+                  </h4>
+                  <p class="passo__peca">Nenhuma (uso do vídeo integrado do processador)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> Como escolhemos o i5-12400, que já tem vídeo embutido, <strong>você economiza mais de R$ 1.500 logo de cara</strong>. A máquina vai funcionar perfeitamente. Quando você quiser rodar jogos pesadíssimos no Ultra, basta comprar uma placa de vídeo dedicada (como a RTX 4060) e plugar: <strong>a máquina já estará com a base pronta para ela!</strong> Minha recomendação de custo-benefício: <strong>Nenhuma (uso do vídeo integrado)</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">4</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Memória RAM <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Kit Kingston Fury Beast 16GB (2x8GB) 3200MHz DDR4</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> O segredo da velocidade. Comprando o <strong>kit fechado (2 pentes de 8GB)</strong> em vez de um único pente de 16GB, você ativa uma tecnologia chamada <strong>&ldquo;Dual Channel&rdquo;</strong>, que literalmente dobra a velocidade de comunicação com o processador. 16GB é a medida ideal para não ter travamentos. Minha recomendação de custo-benefício: <strong>Kit Kingston Fury Beast 16GB (2x8GB) 3200MHz DDR4</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">5</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    SSD <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Kingston NV3 500GB NVMe M.2</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> É o que faz o Windows ligar em poucos segundos. 500GB é um excelente espaço inicial para seus programas e jogos principais. Comprando no Brasil, você tem acesso às altíssimas velocidades (5000 MB/s) e à <strong>segurança da garantia nacional</strong>, sem medo das taxas da alfândega. Minha recomendação de custo-benefício: <strong>Kingston NV3 500GB NVMe M.2</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">6</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Fonte <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">MSI MAG A650BN 650W 80 Plus Bronze</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> A fonte é o coração da máquina. O selo <strong>80 Plus Bronze</strong> e o PFC Ativo garantem energia limpa e segura. Como o nosso PC não tem placa de vídeo dedicada ainda, ele consome pouquíssima energia. Esses 650W vão trabalhar com muita folga, <strong>deixando seu PC preparado para receber upgrades pesados no futuro</strong> sem precisar trocar a fonte. Minha recomendação de custo-benefício: <strong>Fonte MSI MAG A650BN 650W 80 Plus Bronze</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">7</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Cooler <span class="etiqueta etiqueta--sem-custo">Não precisa comprar</span>
+                  </h4>
+                  <p class="passo__peca">Original Intel (vem na caixa)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> Economia inteligente! Como não estamos lidando com processadores de servidor (Xeon) ou topos de linha voltados para overclock extremo, <strong>o cooler de fábrica que acompanha o i5-12400 dá conta do recado perfeitamente</strong>. Você só precisa comprar um &ldquo;Air Cooler Torre&rdquo; futuramente se quiser um PC 100% silencioso e ainda mais frio. Minha recomendação de custo-benefício: <strong>Original Intel (vem na caixa)</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">8</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Gabinete <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Mid Tower Liketec Pinos (Frontal Madeira)</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> É o &ldquo;armário&rdquo; do PC. O importante aqui é o <strong>fluxo de ar</strong>. Esse modelo tem a parte frontal vazada e um visual lindíssimo. Não adianta ter peças boas se elas ficarem sufocadas numa caixa de vidro totalmente fechada, perdendo desempenho por causa do calor. Minha recomendação de custo-benefício: <strong>Gabinete Gamer Liketec Pinos (Frontal Madeira)</strong>.
+                  </p>
+                </div>
+              </li>
+
+              <li class="passo">
+                <span class="passo__num">9</span>
+                <div class="passo__corpo">
+                  <h4 class="passo__titulo">
+                    Fan <span class="etiqueta etiqueta--brasil">Comprar no Brasil</span>
+                  </h4>
+                  <p class="passo__peca">Kit 3 Ventoinhas Rise Mode X Led Rainbow</p>
+                  <p class="passo__porque">
+                    <strong>Por quê:</strong> Trabalham em equipe com o gabinete: <strong>ar frio entrando, ar quente saindo</strong>. É a peça mais barata e a que mais aumenta a vida útil do seu PC. Esse kit já resolve toda a ventilação frontal e dá um visual bem bonito à máquina. Minha recomendação de custo-benefício: <strong>Kit 3 Ventoinhas Rise Mode X Led Rainbow</strong>.
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <div class="guia__rodape">
+              <p class="guia__rodape-texto">
+                Quer ver tudo isso junto, com os preços de hoje e os links de compra?
+              </p>
+              <button class="botao botao--atual guia__rodape-botao" data-lista-recomendada="atual">
+                Lista orçamentária das minhas recomendações
+              </button>
+              <p class="guia__rodape-nota">
+                Abre numa aba nova, já com o frete calculado. Você continua podendo
+                montar a sua própria no simulador.
+              </p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- AVISO EM DESTAQUE -->
+      <aside class="dica-ouro" role="note">
+        <div class="dica-ouro__selo">Dica de Ouro</div>
+        <p class="dica-ouro__texto">
+          Ao comprar no AliExpress, sempre que possível, <strong>compre os itens separadamente</strong>
+          para que cada pacote fique <strong>abaixo de US$ 50</strong>, garantindo apenas a cobrança
+          do ICMS e evitando a taxa federal de 60%.
+        </p>
+      </aside>
+
+    </section>
+
+    <!-- ============ ABA: PC CHINES ============ -->
+    <section class="aba oculta" id="aba-xeon" data-conteudo="xeon">
+      <div class="pagina-pecas__cabecalho pagina-pecas__cabecalho--xeon">
+        <span class="pagina-pecas__selo">China · AliExpress</span>
+        <h1 class="pagina-pecas__titulo">Peças do PC Chinês</h1>
+        <p class="pagina-pecas__descricao">
+          Escolha uma peça de cada categoria e toque em <strong>Adicionar ao simulador</strong>.
+          Os preços importados aparecem em dólar e reais, e o imposto é calculado no simulador.
+        </p>
+      </div>
+      <div class="lista-categorias" id="listaXeon" aria-live="polite">
+        <p class="carregando">Carregando peças...</p>
+      </div>
+    </section>
+
+    <!-- ============ ABA: PC NACIONAL ============ -->
+    <section class="aba oculta" id="aba-atual" data-conteudo="atual">
+      <div class="pagina-pecas__cabecalho pagina-pecas__cabecalho--atual">
+        <span class="pagina-pecas__selo">Brasil · Loja nacional</span>
+        <h1 class="pagina-pecas__titulo">Peças do PC Nacional</h1>
+        <p class="pagina-pecas__descricao">
+          Peças novas compradas no Brasil, com garantia. Escolha uma de cada categoria e
+          toque em <strong>Adicionar ao simulador</strong> para ver o total.
+        </p>
+      </div>
+      <div class="lista-categorias" id="listaAtual" aria-live="polite">
+        <p class="carregando">Carregando peças...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="rodape">
+    <p>Comparador de custo e benefício para uso pessoal e familiar. Preços e impostos são estimativas.</p>
+    <p class="rodape__aviso">As alíquotas de importação mudam com frequência. Confira as regras atuais antes de decidir.
+    </p>
+    <div class="credito credito--rodape">
+      <span class="credito__texto">Feito por <strong>José Arilmar Saldanha Fontenele Neto</strong></span>
+      <span class="credito__pix">
+        <span class="credito__label">Pix:</span>
+        <code class="credito__chave">66d54436-3ad8-4db0-afbd-2bed7214d16b</code>
+        <button class="btn-pix" onclick="copiarPix(this)">Copiar Pix</button>
+      </span>
+    </div>
+  </footer>
+
+  <!-- ============ SIMULADOR / CARRINHO (gaveta) ============ -->
+  <div class="fundo-escuro" id="fundoEscuro" hidden></div>
+
+  <aside class="carrinho" id="carrinho" aria-label="Simulador de compras" aria-hidden="true">
+    <div class="carrinho__topo">
+      <div>
+        <h2 class="carrinho__titulo">Simulador de compras</h2>
+        <p class="carrinho__subtitulo" id="carrinhoContexto">Recibo estimado</p>
+      </div>
+      <button class="carrinho__fechar" id="fecharCarrinho" aria-label="Fechar simulador">&times;</button>
+    </div>
+
+    <div class="carrinho__cambio">
+      <label for="inputCotacao">Cotação do dólar (R$)</label>
+      <input type="number" id="inputCotacao" step="0.01" min="0" value="5.50" inputmode="decimal">
+      <p class="carrinho__cotacao-aviso" id="avisoCotacao">Buscando a cotação de hoje&hellip;</p>
+    </div>
+
+    <div class="carrinho__itens" id="carrinhoItens">
+      <p class="carrinho__vazio">Nenhuma peça adicionada ainda.<br>Escolha peças nas abas do PC Chinês ou do PC
+        Nacional.</p>
+    </div>
+
+    <div class="carrinho__resumo">
+      <div class="carrinho__linha">
+        <span>Subtotal das peças</span>
+        <span id="resumoSubtotal" class="mono">R$ 0,00</span>
+      </div>
+      <div class="carrinho__linha">
+        <span>Total de frete</span>
+        <span id="resumoFrete" class="mono">R$ 0,00</span>
+      </div>
+      <div class="carrinho__linha">
+        <span>Total de impostos</span>
+        <span id="resumoImpostos" class="mono">R$ 0,00</span>
+      </div>
+      <div class="carrinho__linha carrinho__linha--total">
+        <span>Valor final</span>
+        <span id="resumoTotal" class="mono">R$ 0,00</span>
+      </div>
+      <p class="aviso-simulacao" id="avisoSimulacao" hidden></p>
+      <button class="carrinho__gerar" id="gerarOrcamento" disabled>Gerar lista orçamentária</button>
+      <button class="carrinho__limpar" id="limparCarrinho">Limpar tudo</button>
+    </div>
+  </aside>
+
+  <!-- =========================================================
+       JANELA DE DETALHE DA PECA
+       Abre ao clicar em qualquer card. O conteudo (imagem grande a
+       esquerda, descricao/preco/botoes a direita) e montado pelo app.js
+       na funcao abrirDetalhe().
+       ========================================================= -->
+  <div class="detalhe" id="detalhe" hidden>
+    <div class="detalhe__fundo" id="detalheFundo"></div>
+    <div class="detalhe__caixa" role="dialog" aria-modal="true" aria-labelledby="detalheNome">
+      <button class="detalhe__fechar" id="detalheFechar" aria-label="Fechar">
+        <svg class="detalhe__fechar-icone" aria-hidden="true" focusable="false"><use href="#ico-fechar"></use></svg>
+      </button>
+      <div class="detalhe__grade" id="detalheGrade"></div>
+    </div>
+  </div>
+
+  <!-- Botao flutuante do carrinho (mobile) -->
+  <button class="carrinho-flutuante" id="carrinhoFlutuante" aria-label="Abrir simulador">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="9" cy="21" r="1"></circle>
+      <circle cx="20" cy="21" r="1"></circle>
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    </svg>
+    <span class="carrinho-flutuante__contador" id="contadorFlutuante">0</span>
+  </button>
+
+  <script src="app.js?v=18"></script>
+</body>
+
+</html>
