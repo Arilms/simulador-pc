@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="estilo.css?v=18">
+  <link rel="stylesheet" href="estilo.css?v=19">
   <style>
     body { padding: 0; }
     .folha { max-width: 900px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
@@ -145,6 +145,16 @@
     const dados = (() => {
       try { return JSON.parse(sessionStorage.getItem("orcamentoPC")); } catch { return null; }
     })();
+
+    /* A barra de endereco passa a mostrar o link compartilhavel da lista
+       (".../?lista=x1,a12") em vez de "orcamento.html". So troca o texto da
+       barra, sem recarregar; e, se a pessoa der F5 ou copiar a URL, cai no
+       index.html com ?lista=, que ja sabe remontar a lista e voltar para ca. */
+    try {
+      if (dados && dados.link && new URL(dados.link).origin === location.origin) {
+        history.replaceState(null, "", dados.link);
+      }
+    } catch { /* URL invalida ou file://: deixa como esta */ }
 
     function dataLegivel(iso) {
       const d = iso ? new Date(iso) : new Date();

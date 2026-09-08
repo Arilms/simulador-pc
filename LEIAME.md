@@ -1,14 +1,13 @@
 # Comparador PC Xeon (China) x PC Atual (Brasil)
 
-Site pronto para subir no seu servidor. Sao 6 arquivos:
+Site pronto para subir no seu servidor. Sao 5 arquivos:
 
 - `index.html` ,  estrutura das paginas
 - `orcamento.html` ,  pagina da lista orcamentaria (abre ao gerar o orcamento)
 - `estilo.css` ,  visual e responsividade (Desktop e Mobile)
 - `app.js` ,  leitura dos dados, simulador e calculo de impostos
-- `dados.json` ,  dados de exemplo (funciona sem planilha nenhuma)
 
-Suba todos na mesma pasta do servidor. Abre e ja funciona.
+Suba todos na mesma pasta do servidor. Os dados vem da planilha do Google Sheets (secao 2).
 
 ## IMPORTANTE ao subir uma atualizacao
 
@@ -98,7 +97,8 @@ const CONFIG = {
 ```
 
 Pronto. Toda vez que voce editar a planilha, o site atualiza sozinho ao recarregar.
-Se `sheetId` ficar vazio, o site usa o `dados.json` (util para testar).
+A planilha e a unica fonte de dados: se `sheetId` ficar vazio ou a planilha nao responder,
+o site abre sem pecas e avisa no console (F12).
 
 > Alternativa: servicos como **SheetDB** ou **Sheety** tambem transformam a planilha em API,
 > mas exigem cadastro e tem limite no plano gratis. O metodo acima nao precisa de nada disso.
@@ -436,6 +436,22 @@ Na pagina da lista ha quatro botoes para isso:
 > **Depende do `id`:** o link aponta para o `id` da planilha. Se voce **reaproveitar um id**
 > para outra peca, os links antigos passam a mostrar a peca nova. Nunca reuse id de peca
 > apagada ,  sempre siga com o proximo numero.
+
+## O simulador lembra as pecas (F5 nao apaga)
+
+As pecas escolhidas ficam guardadas no navegador do visitante (`localStorage`). Ele pode
+dar F5, fechar a aba e voltar outro dia: o simulador reaparece do jeito que estava, com as
+chaves de frete/imposto que ele tinha desligado. So se guardam os codigos das pecas
+(`x1`, `a12f`...), nunca preco: ao voltar, tudo e relido da planilha e recalculado com a
+cotacao do dia. Peca que saiu da planilha simplesmente nao volta. O botao "Limpar" apaga
+a memoria tambem.
+
+## Endereco da lista orcamentaria
+
+Ao abrir a lista, a barra de endereco mostra o link compartilhavel
+(`.../simulador-pc/?lista=x1,a12`) em vez de `orcamento.html`. Copiar a URL da barra ja
+da o link certo. Se a pessoa der F5 nessa pagina, cai no `index.html` com `?lista=`, que
+remonta a lista e volta sozinho para a pagina do orcamento.
 
 ## Lista orcamentaria
 

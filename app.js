@@ -18,7 +18,7 @@ const CONFIG = {
   limiteIsencaoUSD: 50,       // Faixa em que NAO ha imposto federal
   limiteRemessaConforme_USD: 3000, // Acima disso vira importacao formal (tributos variam)
 
-  // Fonte de dados no Google Sheets. Deixe sheetId vazio ("") para usar o dados.json local.
+  // Fonte de dados no Google Sheets (unica fonte do site).
   // A planilha precisa estar compartilhada como "qualquer pessoa com o link pode ver".
   sheetId: "1a_FYjSv0y8omFbtdUCV5DZrC8nw4vKt_Tp6Gj_PUHxA",
   sheetName: "Base de Dados - Simulador PC (Xeon x Atual)"  // nome exato da aba
@@ -731,25 +731,25 @@ function nomeCategoria(categoria) {
 }
 
 /* ---------------------------------------------------------
-   3) CARREGAMENTO DOS DADOS (Google Sheets ou dados.json)
+   3) CARREGAMENTO DOS DADOS (Google Sheets)
    --------------------------------------------------------- */
 async function carregarDados() {
-  if (CONFIG.sheetId) {
-    try {
-      const url = `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}` +
-                  `/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(CONFIG.sheetName)}`;
-      const resp = await fetch(url);
-      const texto = await resp.text();
-      // O Google embrulha a resposta em "google.visualization...(...)". Removemos o embrulho:
-      const json = JSON.parse(texto.substring(texto.indexOf("{"), texto.lastIndexOf("}") + 1));
-      return normalizarPecas(converterPlanilha(json));
-    } catch (erro) {
-      console.warn("Não foi possível ler o Google Sheets. Usando dados.json.", erro);
-    }
+  if (!CONFIG.sheetId) {
+    console.error("CONFIG.sheetId está vazio: preencha o ID da planilha no topo do app.js.");
+    return [];
   }
-  // Plano B: arquivo local dados.json
-  const resp = await fetch("dados.json");
-  return normalizarPecas(await resp.json());
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}` +
+                `/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(CONFIG.sheetName)}`;
+    const resp = await fetch(url);
+    const texto = await resp.text();
+    // O Google embrulha a resposta em "google.visualization...(...)". Removemos o embrulho:
+    const json = JSON.parse(texto.substring(texto.indexOf("{"), texto.lastIndexOf("}") + 1));
+    return normalizarPecas(converterPlanilha(json));
+  } catch (erro) {
+    console.error("Não foi possível ler o Google Sheets. Confira se a planilha está publicada na web e se o nome da aba está certo.", erro);
+    return [];
+  }
 }
 
 /* Limpa o conteudo de uma celula.
@@ -1325,6 +1325,43 @@ function removerDoCarrinho(indice) {
   atualizarCarrinho();
 }
 
+/* ---------------------------------------------------------
+   Carrinho que sobrevive ao F5
+   Guarda no localStorage so os CODIGOS das pecas (os mesmos do link
+   compartilhavel: "x1", "a12f"...), nunca a peca inteira. Assim, ao voltar,
+   a peca e relida do catalogo atual: preco e cotacao sempre atuais, e uma
+   peca que saiu da planilha simplesmente nao volta.
+   --------------------------------------------------------- */
+const CHAVE_CARRINHO_SALVO = "carrinhoPC";
+
+function salvarCarrinho() {
+  // Sem catalogo carregado nao ha o que salvar: evita apagar um carrinho bom
+  // quando a planilha falhou ao carregar.
+  if (TODAS_AS_PECAS.length === 0) return;
+  try {
+    const codigos = carrinho.map((p, i) => codigoDaPeca(p, ajusteDoItem(i)));
+    if (codigos.length === 0) localStorage.removeItem(CHAVE_CARRINHO_SALVO);
+    else localStorage.setItem(CHAVE_CARRINHO_SALVO, codigos.join(","));
+  } catch (erro) {
+    // Navegador em modo privado ou sem espaco: o site segue funcionando sem salvar.
+    console.warn("Não foi possível salvar o carrinho.", erro);
+  }
+}
+
+function restaurarCarrinhoSalvo() {
+  let salvo = "";
+  try { salvo = localStorage.getItem(CHAVE_CARRINHO_SALVO) || ""; } catch { return; }
+  if (!salvo) return;
+  salvo.split(",").forEach(codigo => {
+    const lido = lerCodigoDaPeca(codigo);
+    if (!lido || lido.faltando) return;
+    carrinho.push(lido.peca);
+    ajustesCarrinho.push({ semImposto: !!lido.ajuste.semImposto,
+                           semFrete: !!lido.ajuste.semFrete,
+                           semItem: !!lido.ajuste.semItem });
+  });
+}
+
 /* Liga/desliga imposto ou frete de UM item, so para o visitante ver o quanto
    aquela parcela pesa. Nao muda nada do que sera cobrado de verdade. */
 function alternarAjuste(indice, campo) {
@@ -1393,6 +1430,7 @@ function linhaAjustavel({ rotulo, indice, campo, desligado, valorAtivo, mostrarB
 }
 
 function atualizarCarrinho() {
+  salvarCarrinho();
   const lista = document.getElementById("carrinhoItens");
   let subtotal = 0, impostos = 0, total = 0, frete = 0;
 
@@ -1834,6 +1872,9 @@ async function iniciar() {
 
   // Veio de um link compartilhado? Entao nem monta a home: vai direto pra lista.
   if (await abrirListaDoLink()) return;
+
+  // Recupera o que estava no simulador antes do F5 (ou de fechar a aba).
+  restaurarCarrinhoSalvo();
 
   montarPagina("xeon", "listaXeon");
   montarPagina("atual", "listaAtual");
